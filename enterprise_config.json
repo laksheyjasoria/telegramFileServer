@@ -1,0 +1,15 @@
+{
+ "logger_bot_token": "8199363389:AAEQL6OnxLITm6XtWn3fvOLNJhEi7nYWcNI",
+  "logger_chat_id": "1379405363",
+  "server_bot_token": "8245576448:AAGyRB_ik165sZjJuR0H5gMbRSdwB_ukrtY",
+  "server_chat_id": "1379405363",
+  "api_key": "Ud8nBfUyFOZjTagBCChB4vP26SAAtw43WH13mS0KGzA",
+  "service_name": "enterprise-file-server",
+  "environment": "production",
+  "max_file_size_mb": 2000,
+  "max_workers": 5,
+  "allowed_file_types": [
+    "*"
+  ],
+  "rate_limit": 100
+}

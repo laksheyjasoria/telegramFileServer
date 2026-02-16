@@ -1,0 +1,279 @@
+{
+  "info": {
+    "name": "File Server API",
+    "description": "Telegram-based File Server - Upload, manage, and retrieve files",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{BASE_URL}}/health",
+          "host": ["{{BASE_URL}}"],
+          "path": ["health"]
+        },
+        "description": "Check if server is running (no auth required)"
+      },
+      "response": []
+    },
+    {
+      "name": "📤 Upload & Retrieve",
+      "item": [
+        {
+          "name": "Upload Single File",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "file",
+                  "type": "file",
+                  "src": ""
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/upload",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "upload"]
+            },
+            "description": "Upload a single file and get file_id\n\nResponse on success (200):\n```\n{\n  \"file_id\": \"abc123\",\n  \"status\": \"pending\"\n}\n```\n\nResponse on error: null"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Multiple Files",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "formdata",
+              "formdata": [
+                {
+                  "key": "files",
+                  "type": "file",
+                  "src": []
+                }
+              ]
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/upload/multiple",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "upload", "multiple"]
+            },
+            "description": "Upload multiple files at once\n\nResponse (200):\n```\n{\n  \"file_ids\": [\"id1\", \"id2\"],\n  \"errors\": []\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Upload Audio from URL",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"url\": \"https://example.com/audio.mp3\",\n  \"filename\": \"song.mp3\"\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/upload/audio",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "upload", "audio"]
+            },
+            "description": "Import audio file from playable URL\n\nResponse on success (200):\n```\n{\n  \"file_id\": \"audio123\",\n  \"status\": \"pending\"\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📋 File Information",
+      "item": [
+        {
+          "name": "Get File Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/file/{{FILE_ID}}/info",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "file", "{{FILE_ID}}", "info"]
+            },
+            "description": "Get complete information about a file\n\nReplace {{FILE_ID}} with actual file ID\n\nResponse (200):\n```\n{\n  \"file_id\": \"abc123\",\n  \"filename\": \"document.pdf\",\n  \"size\": 250000,\n  \"mime_type\": \"application/pdf\",\n  \"file_type\": \"document\",\n  \"status\": \"completed\",\n  \"view_url\": \"/view/BQACAgUA...\",\n  \"download_url\": \"https://api.telegram.org/...\",\n  \"created_at\": \"2026-02-16T10:30:00\",\n  \"metadata\": {}\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get View URL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/file/{{FILE_ID}}/view-url",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "file", "{{FILE_ID}}", "view-url"]
+            },
+            "description": "Get the viewable/streaming URL for a file\n\nResponse (200):\n```\n{\n  \"view_url\": \"/view/BQACAgUA...\"\n}\n```\n\nResponse (202 - Not Ready):\n```\n{\n  \"error\": \"File not ready: pending\"\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Download URL",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/file/{{FILE_ID}}/download-url",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "file", "{{FILE_ID}}", "download-url"]
+            },
+            "description": "Get the direct download URL for a file\n\nResponse (200):\n```\n{\n  \"download_url\": \"https://api.telegram.org/file/bot.../documents/file_1.pdf\"\n}\n```\n\nResponse (202 - Not Ready):\n```\n{\n  \"error\": \"File not ready: processing\"\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Files",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/files?type=image&limit=50",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "files"],
+              "query": [
+                {
+                  "key": "type",
+                  "value": "image",
+                  "description": "Filter by type: audio, video, image, document, other (optional)"
+                },
+                {
+                  "key": "limit",
+                  "value": "50",
+                  "description": "Maximum files to return (default: 100)"
+                }
+              ]
+            },
+            "description": "List all completed files with optional filtering\n\nQuery Parameters:\n- type: audio, video, image, document, other (optional)\n- limit: max files to return (default 100)\n\nResponse (200):\n```\n{\n  \"total\": 2,\n  \"files\": [\n    { \"file_id\": \"id1\", \"filename\": \"photo.jpg\", ... },\n    { \"file_id\": \"id2\", \"filename\": \"document.pdf\", ... }\n  ]\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "🗑️ Delete & Stats",
+      "item": [
+        {
+          "name": "Delete File",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/file/{{FILE_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "file", "{{FILE_ID}}"]
+            },
+            "description": "Delete a file from storage\n\nResponse (200):\n```\n{\n  \"success\": true,\n  \"message\": \"File abc123 deleted\"\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Server Statistics",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "stats"]
+            },
+            "description": "Get server statistics\n\nResponse (200):\n```\n{\n  \"total_files\": 42,\n  \"completed\": 40,\n  \"failed\": 2,\n  \"total_size\": 157286400,\n  \"by_type\": {\n    \"audio\": 5,\n    \"video\": 3,\n    \"image\": 25,\n    \"document\": 8,\n    \"other\": 1\n  }\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000",
+      "type": "string",
+      "description": "Server base URL"
+    },
+    {
+      "key": "API_KEY",
+      "value": "your_api_key_here",
+      "type": "string",
+      "description": "Your API Key from config"
+    },
+    {
+      "key": "FILE_ID",
+      "value": "abc123def456",
+      "type": "string",
+      "description": "File ID from upload response"
+    }
+  ]
+}

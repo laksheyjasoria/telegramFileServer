@@ -1,0 +1,362 @@
+{
+  "info": {
+    "name": "Logger API",
+    "description": "Telegram Logger Service - Create and manage external service loggers",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "🔐 Logger Management",
+      "item": [
+        {
+          "name": "Create Logger",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"service_name\": \"my_external_service\",\n  \"debug\": false,\n  \"warning\": false,\n  \"info\": false\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/create",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "create"]
+            },
+            "description": "Create a new logger instance for an external service\n\nResponse:\n```\n{\n  \"logger_id\": \"550e8400-e29b-41d4-a716-446655440000\",\n  \"service_name\": \"my_external_service\",\n  \"status\": \"created\"\n}\n```\n\nDefault levels (all false):\n- debug: false\n- warning: false\n- info: false\n- error: true (always)\n- critical: true (always)"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logger Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}"]
+            },
+            "description": "Get complete information about a logger\n\nResponse:\n```\n{\n  \"logger_id\": \"550e8400...\",\n  \"service_name\": \"my_service\",\n  \"config\": {\n    \"service_name\": \"my_service\",\n    \"debug_enabled\": false,\n    \"warning_enabled\": false,\n    \"info_enabled\": false\n  },\n  \"created_at\": \"2026-02-16T10:00:00.000000\",\n  \"last_used\": \"2026-02-16T10:05:00.000000\",\n  \"age_seconds\": 300,\n  \"message_count\": 5\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logger Config",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/config",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "config"]
+            },
+            "description": "Get only the configuration of a logger\n\nResponse:\n```\n{\n  \"service_name\": \"my_service\",\n  \"debug_enabled\": false,\n  \"warning_enabled\": false,\n  \"info_enabled\": false,\n  \"error_enabled\": true,\n  \"critical_enabled\": true\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Update Logger Config",
+          "request": {
+            "method": "PUT",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"debug\": false,\n  \"warning\": true,\n  \"info\": true\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/config",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "config"]
+            },
+            "description": "Update logging levels for a logger\n\nPass only the fields you want to update:\n- debug: true/false\n- warning: true/false\n- info: true/false\n\nError and critical are always enabled.\n\nResponse:\n```\n{\n  \"service_name\": \"my_service\",\n  \"debug_enabled\": false,\n  \"warning_enabled\": true,\n  \"info_enabled\": true,\n  \"error_enabled\": true,\n  \"critical_enabled\": true\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "List All Loggers",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/list",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "list"]
+            },
+            "description": "List all active loggers in the pool\n\nResponse:\n```\n{\n  \"total\": 3,\n  \"loggers\": [\n    {\n      \"logger_id\": \"550e8400...\",\n      \"service_name\": \"my_service\",\n      \"message_count\": 10,\n      \"age_seconds\": 3600\n    },\n    ...\n  ]\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Logger Pool Stats",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/stats",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "stats"]
+            },
+            "description": "Get logger pool statistics and performance metrics\n\nResponse:\n```\n{\n  \"pool_size\": 3,\n  \"total_services\": 2,\n  \"ttl_seconds\": 3600,\n  \"messages_sent\": 150,\n  \"messages_failed\": 2,\n  \"queue_size\": 0,\n  \"loggers\": [\n    {\n      \"logger_id\": \"550e8400...\",\n      \"service_name\": \"my_service\",\n      \"message_count\": 50,\n      \"age_seconds\": 1200\n    },\n    ...\n  ]\n}\n```"
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Logger",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}"]
+            },
+            "description": "Delete a logger from the pool\n\nResponse:\n```\n{\n  \"logger_id\": \"550e8400...\",\n  \"status\": \"deleted\"\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "📝 Logging Messages",
+      "item": [
+        {
+          "name": "Log Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"level\": \"info\",\n  \"message\": \"User login successful\",\n  \"metadata\": {\n    \"user_id\": 12345,\n    \"username\": \"john_doe\",\n    \"ip_address\": \"192.168.1.1\",\n    \"timestamp\": \"2026-02-16T10:05:30\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/log",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "log"]
+            },
+            "description": "Send a log message to a logger\n\nParameters:\n- level (required): debug, info, warning, error, critical\n- message (required): Log message text\n- metadata (optional): JSON object with additional data\n\nResponse:\n```\n{\n  \"logger_id\": \"550e8400...\",\n  \"level\": \"info\",\n  \"message\": \"User login successful\",\n  \"status\": \"logged\"\n}\n```\n\nNote: Message will only be sent to Telegram if the level is enabled in logger config"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Debug Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"level\": \"debug\",\n  \"message\": \"Database query executed\",\n  \"metadata\": {\n    \"query_time_ms\": 142,\n    \"rows_affected\": 5\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/log",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "log"]
+            },
+            "description": "Send a debug log message"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Warning Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"level\": \"warning\",\n  \"message\": \"High memory usage detected\",\n  \"metadata\": {\n    \"memory_percent\": 85,\n    \"available_mb\": 512\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/log",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "log"]
+            },
+            "description": "Send a warning log message"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Error Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"level\": \"error\",\n  \"message\": \"Database connection failed\",\n  \"metadata\": {\n    \"error_code\": \"ECONNREFUSED\",\n    \"retry_count\": 3,\n    \"error_message\": \"Connection refused at localhost:5432\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/log",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "log"]
+            },
+            "description": "Send an error log message (always sent regardless of config)"
+          },
+          "response": []
+        },
+        {
+          "name": "Log Critical Message",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json",
+                "type": "text"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"level\": \"critical\",\n  \"message\": \"Service crashed - immediate restart required\",\n  \"metadata\": {\n    \"exit_code\": -1,\n    \"uptime_seconds\": 3600,\n    \"crash_reason\": \"Out of memory\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/log",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "log"]
+            },
+            "description": "Send a critical log message (always sent regardless of config)"
+          },
+          "response": []
+        },
+        {
+          "name": "Test Logger",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "X-API-Key",
+                "value": "{{API_KEY}}",
+                "type": "text"
+              }
+            ],
+            "url": {
+              "raw": "{{BASE_URL}}/api/logger/{{LOGGER_ID}}/test",
+              "host": ["{{BASE_URL}}"],
+              "path": ["api", "logger", "{{LOGGER_ID}}", "test"]
+            },
+            "description": "Send a test message to verify logger is working\n\nResponse:\n```\n{\n  \"logger_id\": \"550e8400...\",\n  \"status\": \"test_message_sent\",\n  \"timestamp\": \"2026-02-16T10:10:00.000000\"\n}\n```"
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "BASE_URL",
+      "value": "http://localhost:5000",
+      "type": "string",
+      "description": "Server base URL"
+    },
+    {
+      "key": "API_KEY",
+      "value": "your_api_key_here",
+      "type": "string",
+      "description": "Your API Key from config"
+    },
+    {
+      "key": "LOGGER_ID",
+      "value": "550e8400-e29b-41d4-a716-446655440000",
+      "type": "string",
+      "description": "Logger ID from create response"
+    }
+  ]
+}
