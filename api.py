@@ -9,6 +9,7 @@ from flask import Flask, request, jsonify, abort, send_file, Response
 from werkzeug.utils import secure_filename
 import requests
 from io import BytesIO
+from flask_cors import CORS
 
 from models import FileType, FileStatus
 
@@ -16,6 +17,7 @@ def create_app(config, logger, file_manager):
     """Create Flask app with all routes"""
     
     app = Flask(__name__)
+    CORS(app)  # Add this in your api.py
     
     # ========== AUTHENTICATION ==========
     def require_api_key(f):
